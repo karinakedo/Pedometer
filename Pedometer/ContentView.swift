@@ -1,37 +1,25 @@
+//  ContentView.swift
+//  Pedometer
+//
+//  Created by Karina Kedo on 2/20/25.
+
 import SwiftUI
 
 struct ContentView: View {
-    @State private var hourlySteps: [Int] = Array(repeating: 0, count: 24)
-    @State private var totalSteps: Double = 0
-    let pedometerManager = PedometerManager()
+    @StateObject private var pedometerManager = PedometerManager()
+    @State private var daysData: [DaySteps] = []
 
     var body: some View {
-        VStack {
-            Text("Steps today: \(Int(totalSteps))")
-                .font(.largeTitle)
-
-            HourlyStepsView(steps: hourlySteps)
-        }
-        .onAppear {
-            pedometerManager.requestAuthorization()
-            updateSteps()
-        }
+        HourlyStepsView(daysData: daysData)
+            .onAppear {
+                pedometerManager.requestAuthorization()
+                loadData()
+            }
     }
 
-    private func updateSteps() {
-        // Fetch total steps
-        pedometerManager.fetchStepCount { stepCount in
-            totalSteps = stepCount
-        }
-
-        // Fetch hourly steps
-        pedometerManager.fetchHourlySteps { steps in
-            hourlySteps = steps
+    private func loadData() {
+        pedometerManager.fetchHistoricalData(forDays: 7) { fetchedData in
+            daysData = fetchedData
         }
     }
 }
-
-#Preview {
-    ContentView()
-}
-
