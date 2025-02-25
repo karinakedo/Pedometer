@@ -14,6 +14,12 @@ struct PedometerApp: App {
         }
     }
 
+    struct ContentView_Previews: PreviewProvider {
+        static var previews: some View {
+            ContentView()  // Initialize your struct
+        }
+    }
+
     private func createSampleData() -> [DaySteps] {
         let calendar = Calendar.current
         let today = Date()
